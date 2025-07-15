@@ -72,7 +72,7 @@ BudgetBuddy/
 
 ## 🌐 Live Demo
 
-🌍 [View BudgetBuddy on Vercel](https://budgetbuddy.vercel.app)
+🌍 [View BudgetBuddy on Vercel](https://budget-buddy-cyan-theta.vercel.app)
 
 ---
 
