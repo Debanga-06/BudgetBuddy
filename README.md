@@ -45,10 +45,6 @@ BudgetBuddy/
 ├── index.html
 ├── style.css
 ├── script.js
-├── data/
-│   └── categories.json
-├── assets/
-│   └── icons, logos, images
 ├── README.md
 ├── LICENSE
 ```
