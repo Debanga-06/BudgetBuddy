@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BudgetBuddy - Personal Expense Tracker</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-wallet"></i>
+                BudgetBuddy
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Dashboard Stats -->
+        <div class="dashboard">
+            <div class="stat-card">
+                <h3>Total Expenses</h3>
+                <div class="stat-value" id="totalExpenses">$0.00</div>
+            </div>
+            <div class="stat-card">
+                <h3>Monthly Budget</h3>
+                <div class="stat-value" id="monthlyBudget">$0.00</div>
+            </div>
+            <div class="stat-card">
+                <h3>Savings Goal</h3>
+                <div class="stat-value" id="savingsGoal">$0.00</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <h2>Add New Expense</h2>
+                <form id="expenseForm">
+                    <div class="form-group">
+                        <label for="amount">Amount</label>
+                        <input type="number" id="amount" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category" required>
+                            <option value="">Select Category</option>
+                            <option value="food">🍽️ Food & Dining</option>
+                            <option value="transport">🚗 Transportation</option>
+                            <option value="shopping">🛍️ Shopping</option>
+                            <option value="entertainment">🎬 Entertainment</option>
+                            <option value="bills">📋 Bills & Utilities</option>
+                            <option value="healthcare">🏥 Healthcare</option>
+                            <option value="education">📚 Education</option>
+                            <option value="travel">✈️ Travel</option>
+                            <option value="other">📦 Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" rows="3" placeholder="Optional description..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Expense</button>
+                </form>
+
+                <div class="currency-selector">
+                    <h3>Currency</h3>
+                    <select id="currencySelect" onchange="updateCurrency()">
+                        <option value="USD">USD ($)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="GBP">GBP (£)</option>
+                        <option value="JPY">JPY (¥)</option>
+                        <option value="INR">INR (₹)</option>
+                    </select>
+                </div>
+
+                <div class="budget-progress">
+                    <h3>Budget Settings</h3>
+                    <div class="form-group">
+                        <label for="budgetAmount">Monthly Budget</label>
+                        <input type="number" id="budgetAmount" step="0.01" placeholder="Set your budget">
+                    </div>
+                    <div class="form-group">
+                        <label for="savingsAmount">Savings Goal</label>
+                        <input type="number" id="savingsAmount" step="0.01" placeholder="Set your savings goal">
+                    </div>
+                    <button onclick="updateBudget()" class="btn btn-success">Update Budget</button>
+                </div>
+
+                <div class="export-section">
+                    <h3>Export Data</h3>
+                    <button onclick="exportToPDF()" class="btn btn-secondary">
+                        <i class="fas fa-file-pdf"></i> Export PDF
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="content-area">
+                <!-- Budget Progress -->
+                <div class="card">
+                    <h2>Budget Overview</h2>
+                    <div class="budget-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="budgetProgress"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span id="spentAmount">Spent: $0.00</span>
+                            <span id="remainingAmount">Remaining: $0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="card">
+                    <div class="tabs">
+                        <button class="tab active" onclick="showTab('expenses')">Expenses</button>
+                        <button class="tab" onclick="showTab('charts')">Charts</button>
+                    </div>
+
+                    <!-- Expenses Tab -->
+                    <div id="expenses" class="tab-content active">
+                        <div class="filters">
+                            <div class="filter-group">
+                                <label>Filter by Period</label>
+                                <select id="periodFilter" onchange="filterExpenses()">
+                                    <option value="all">All Time</option>
+                                    <option value="today">Today</option>
+                                    <option value="week">This Week</option>
+                                    <option value="month">This Month</option>
+                                    <option value="custom">Custom Range</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>Category</label>
+                                <select id="categoryFilter" onchange="filterExpenses()">
+                                    <option value="all">All Categories</option>
+                                    <option value="food">Food & Dining</option>
+                                    <option value="transport">Transportation</option>
+                                    <option value="shopping">Shopping</option>
+                                    <option value="entertainment">Entertainment</option>
+                                    <option value="bills">Bills & Utilities</option>
+                                    <option value="healthcare">Healthcare</option>
+                                    <option value="education">Education</option>
+                                    <option value="travel">Travel</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="customDateRange" style="display: none;">
+                            <div class="filters">
+                                <div class="filter-group">
+                                    <label>From Date</label>
+                                    <input type="date" id="fromDate" onchange="filterExpenses()">
+                                </div>
+                                <div class="filter-group">
+                                    <label>To Date</label>
+                                    <input type="date" id="toDate" onchange="filterExpenses()">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="expensesList"></div>
+                    </div>
+
+                    <!-- Charts Tab -->
+                    <div id="charts" class="tab-content">
+                        <div class="chart-container">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="monthlyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <!-- Footer -->
+     <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3><i class="fas fa-wallet"></i> BudgetBuddy</h3>
+                    <p>Your personal finance companion that helps you track expenses, manage budgets, and achieve your financial goals with ease.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-p"></i></a>
+                        <a href="https://x.com/@Debanga61379"><i class="fab fa-twitter"></i></a>
+                        <a href="https://github.com/Debanga-06"><i class="fab fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/debanga-guria"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Features</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Expense Tracking</a></li>
+                        <li><a href="#">Budget Management</a></li>
+                        <li><a href="#">Financial Reports</a></li>
+                        <li><a href="#">Goal Setting</a></li>
+                        <li><a href="#">Data Export</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 BudgetBuddy by Debanga. All rights reserved. Made with <i class="fas fa-heart" style="color: #e74c3c;"></i> for better financial management.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
