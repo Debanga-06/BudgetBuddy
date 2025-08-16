@@ -102,7 +102,7 @@ This project is licensed under the **MIT License** – see the [LICENSE](./LICEN
 
 **Debanga**  
 2nd Year B.Tech CSE (AI-ML), Brainware University  
-🔗 [Portfolio](https://debanga-06.github.io/) | [GitHub](https://github.com/Debanga-06)
+🔗 [Portfolio](https://debanga.vercel.app) | [GitHub](https://github.com/Debanga-06)
 
 ---
 
