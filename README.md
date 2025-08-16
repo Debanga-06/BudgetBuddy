@@ -16,16 +16,6 @@
 
 ---
 
-## 📸 Screenshots
-
-> *(Insert screenshots here)*  
-> Suggested:  
-> - Dashboard with charts  
-> - Add Expense modal  
-> - Summary view with filters
-
----
-
 ## 🛠️ Tech Stack
 
 | Technology      | Usage                             |
